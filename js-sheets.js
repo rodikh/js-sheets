@@ -117,15 +117,16 @@ class JSONSheet extends Array {
         return fArr;
     }
 
-    // sort(field, dir) {
-    //     return this.sort((a, b) => {
-    //         if (dir === -1) {
-    //             return parseInt(b[field], 10) - parseInt(a[field], 10);
-    //         } else {
-    //             return parseInt(a[field], 10) - parseInt(b[field], 10);
-    //         }
-    //     });
-    // }
+    sortByField(field, dir) {
+        // TODO: add cases for numeric and lexical
+        return this.sort((a, b) => {
+            if (dir === -1) {
+                return parseInt(b[field], 10) - parseInt(a[field], 10);
+            } else {
+                return parseInt(a[field], 10) - parseInt(b[field], 10);
+            }
+        });
+    }
 
     findByField(fieldName, value) {
         if (this.indices[fieldName]) {
