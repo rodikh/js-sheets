@@ -7,7 +7,6 @@ A javascript array manipulation library that mimics spreadsheet and database fun
 Install using npm:
 ```
 npm install js-sheets --save
-
 ```
 Include in your code:
 

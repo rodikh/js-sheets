@@ -49,7 +49,12 @@ describe('JSON-Sheets', function () {
 
             let aSum = fObj.reduce((prev, cur) => prev + cur.a, 0);
             expect(aSum).to.equal(6);
-        })
+        });
+
+        it('should instantiate without passed array', function () {
+            let fObj = new JSONSheet();
+            expect(Array.from(fObj)).to.deep.equal([]);
+        });
     });
 
     describe("Array accessors", function () {
@@ -110,6 +115,14 @@ describe('JSON-Sheets', function () {
 
             fObj.unshift(arr[0]);
             expect(fObj.indices['b']['4']).to.deep.equal([arr[2],arr[0]]);
+        });
+
+        it('should have array usability without indices', function () {
+            let fObj = new JSONSheet();
+            fObj.push(arr[0]);
+            expect(Array.from(fObj)).to.deep.equal([arr[0]]);
+            fObj.pop();
+            expect(Array.from(fObj)).to.deep.equal([]);
         });
     });
 

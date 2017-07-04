@@ -59,7 +59,7 @@ class JSONSheet extends Array {
     }
 
     addToIndices(item) {
-        if (!this.indices) {
+        if (!Object.keys(this.indices).length) {
             return;
         }
 
@@ -77,7 +77,7 @@ class JSONSheet extends Array {
     }
 
     removeFromIndices(item) {
-        if (!this.indices) {
+        if (!Object.keys(this.indices).length) {
             return;
         }
 
