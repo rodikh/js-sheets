@@ -46,7 +46,8 @@ TO DOCUMENT
 
 ## Development Roadmap
 Planned features:
-* Aggregation operations (avg, sum, count)
+* Aggregation operations on fields (avg, sum, count)
+* Set operations between sheets (union, intersect, etc.)
 * Advanced querying
 * 100% test coverage
 
