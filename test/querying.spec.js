@@ -4,7 +4,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const JSONSheet = require('../json-sheets');
+const JSONSheet = require('../js-sheets');
 
 describe('Querying', function () {
     const arr = [{a: 1, b: 4}, {a: 2, b: 3, c: 6}, {a: 3, b: 4}];

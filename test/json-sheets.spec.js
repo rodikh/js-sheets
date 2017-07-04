@@ -4,7 +4,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const JSONSheet = require('../json-sheets');
+const JSONSheet = require('../js-sheets');
 
 describe('JSON-Sheets', function () {
     const arr = [{a: 1, b: 4}, {a: 2, b: 3, c: 6}, {a: 3, b: 4}];
@@ -114,7 +114,24 @@ describe('JSON-Sheets', function () {
     });
 
     describe("Sort", function () {
-        xit("should sort by field");
+        it("should sort by field", function () {
+            let fObj = new JSONSheet(arr, {indices: ['a','b','c']});
+            fObj.sortByField('b');
+            expect(fObj[0]).to.deep.equal(arr[1]);
+        });
+
+        it("should sort by field in descending order", function () {
+            let fObj = new JSONSheet(arr, {indices: ['a','b','c']});
+            fObj.sortByField('b', -1);
+            expect(fObj[2]).to.deep.equal(arr[1]);
+        });
+
+        it("should sort by field and not mutate array in sortCopy mode", function () {
+            let fObj = new JSONSheet(arr, {indices: ['a','b','c']});
+            let sorted = fObj.sortByField('b', 1, {sortCopy:true});
+            expect(fObj[0]).to.deep.equal(arr[0]);
+            expect(sorted[0]).to.deep.equal(arr[1]);
+        });
     });
 
     describe("Sets", function () {

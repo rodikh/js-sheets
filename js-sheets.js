@@ -117,9 +117,13 @@ class JSONSheet extends Array {
         return fArr;
     }
 
-    sortByField(field, dir) {
+    sortByField(field, dir = 1, options = {sortCopy:false}) {
+        let arrToSort = this;
+        if (options.sortCopy) {
+            arrToSort = this.slice();
+        }
         // TODO: add cases for numeric and lexical
-        return this.sort((a, b) => {
+        return arrToSort.sort((a, b) => {
             if (dir === -1) {
                 return parseInt(b[field], 10) - parseInt(a[field], 10);
             } else {
