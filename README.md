@@ -1,6 +1,13 @@
 # js-sheets
 
-A javascript array manipulation library that mimics spreadsheet and database functionality in variable
+A javascript array manipulation library that mimics spreadsheet and database functionality in code.
+
+### What and Why
+js-sheets was born out of a need to manipulate, inspect, and merge large json array files in javascript.
+
+It initially supported array lookup by field, and merging data from two arrays, but was quickly expanded to support indexing for efficient lookup, saving/loading to file, and more. 
+
+Now it is being developed as a fully featured "in-code" database.
 
 ### Installing
 
