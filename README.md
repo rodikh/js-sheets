@@ -1,2 +1,2 @@
-# json-sheets
-A javascript JSON manipulation library that mimics spreadsheet and database functionality in variable
+# js-sheets
+A javascript array manipulation library that mimics spreadsheet and database functionality in variable
