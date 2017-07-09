@@ -117,6 +117,8 @@ describe('JSON-Sheets', function () {
             expect(fObj.indices['b']['4']).to.deep.equal([arr[2],arr[0]]);
         });
 
+        xit("should update (add and remove) indecies on splice", function () {});
+
         it('should have array usability without indices', function () {
             let fObj = new JSONSheet();
             fObj.push(arr[0]);
@@ -124,6 +126,10 @@ describe('JSON-Sheets', function () {
             fObj.pop();
             expect(Array.from(fObj)).to.deep.equal([]);
         });
+    });
+
+    describe("Array property", function () {
+        xit("should remove from indices upon removal", function () {});
     });
 
     describe("Sort", function () {

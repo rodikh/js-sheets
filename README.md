@@ -42,13 +42,43 @@ arr.forEach(item=>{
 ```
 
 ### Indexes
-TO DOCUMENT
+js-sheets can be configured to index properties of the objects that are stored in it's array using hash-maps.
+
+To index fields, pass an array of field names to the constructor as options.indices.
+```js
+let arr = new Sheets([
+    {weight: 10, color: 'red'},
+    {weight: 12, color: 'blue'},
+    {weight: 8, color: 'red'}
+], {indices: ['weight', 'color']});
+ 
+let list1 = arr.findByField('weight', 12);      // list1 = [{weight: 12, color: 'blue'}]
+let list2 = arr.findByField('color', 'red');    // list2 = [{weight: 10, color: 'red'},{weight: 8, color: 'red'}]
+```
+Operations done on indexed properties will use hash-map lookups instead of looping over the array.
 
 ### Exporting/Importing to JSON
-TO DOCUMENT
+js-sheets includes convenience functions for saving and loading arrays from files.
+```js
+let filearray = Sheets.fromFile(path, options);
+filearray.push({foo:'bar'});
+filearray.save(); // saves back to the original file
+filearray.save(path); // saves a new copy, without changing the original file
+```
 
-### Sorting
-TO DOCUMENT
+## Methods
+
+### sortByField
+```js
+let arr = new Sheets([
+    {weight: 10, color: 'red'},
+    {weight: 12, color: 'blue'},
+    {weight: 8, color: 'red'}
+]);
+arr.sortByField('weight');                                      // sort in-place
+let sorted = arr.sortByField('weight', -1, {sortCopy:true});    // returns a sorted copy in ASC order, without changing the original array
+console.log(sorted[0] === arr[2]);                              // true
+``` 
 
 ## Development Roadmap
 Planned features:

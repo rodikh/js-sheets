@@ -1,7 +1,9 @@
 /**
  * Created by rodik on 07/03/2017.
  */
+"use strict";
 const fs = require('fs');
+// const handler = require('./proxy-handler');
 
 class JSONSheet extends Array {
     /**
@@ -25,6 +27,8 @@ class JSONSheet extends Array {
 
         // return new Proxy(this, handler);
     }
+
+    //// Index creation ////
 
     createindices() {
         this.indices = {};
@@ -58,19 +62,31 @@ class JSONSheet extends Array {
         });
     }
 
+    //// END: Index creation ////
+
+    //// Adding and removing from indices ////
+
     addToIndices(item) {
         if (!Object.keys(this.indices).length) {
             return;
         }
 
+        if (Array.isArray(item)) {
+            return item.forEach(arrItem=>{
+                this.addToIndices(arrItem);
+            });
+        }
+
         Object.keys(this.indices).forEach((key) => {
             let keyIndex = this.indices[key];
             if (item.hasOwnProperty(key)) {
-                if (keyIndex[item[key]]) {
-                    keyIndex[item[key]].push(item);
-
+                let itemValues = item[key];
+                if (!Array.isArray(itemValues)) {
+                    this.addItemToIndex(keyIndex, itemValues, item);
                 } else {
-                    keyIndex[item[key]] = [item];
+                    itemValues.forEach(itemValue => {
+                        this.addItemToIndex(keyIndex, itemValue, item);
+                    });
                 }
             }
         });
@@ -81,22 +97,51 @@ class JSONSheet extends Array {
             return;
         }
 
+        if (Array.isArray(item)) {
+            return item.forEach(arrItem=>{
+                this.removeFromIndices(arrItem);
+            });
+        }
+
         Object.keys(this.indices).forEach((key) => {
             let keyIndex = this.indices[key];
             if (item.hasOwnProperty(key)) {
-                if (keyIndex[item[key]]) {
-                    if (keyIndex[item[key]].length < 2) {
-                        delete keyIndex[item[key]];
-                    } else {
-                        let indexOf = keyIndex[item[key]].indexOf(item);
-                        if (indexOf !== -1) {
-                            keyIndex[item[key]].splice(indexOf,1);
-                        }
-                    }
+                let value = item[key];
+                if(Array.isArray(value)){
+                    value.forEach(innerValue=>{
+                        this.removeItemFromIndex(keyIndex, innerValue, item);
+                    });
+                }else{
+                    this.removeItemFromIndex(keyIndex, value, item);
                 }
             }
         });
     }
+
+    addItemToIndex(keyIndex, itemValues, item) {
+        if (keyIndex[itemValues]) {
+            keyIndex[itemValues].push(item);
+        } else {
+            keyIndex[itemValues] = [item];
+        }
+    }
+
+    removeItemFromIndex(keyIndex, value, item) {
+        if (keyIndex[value]) {
+            if (keyIndex[value].length < 2) {
+                delete keyIndex[value];
+            } else {
+                let indexOf = keyIndex[value].indexOf(item);
+                if (indexOf !== -1) {
+                    keyIndex[value].splice(indexOf, 1);
+                }
+            }
+        }
+    }
+
+    //// END: Adding and removing from indices ////
+
+    //// File commands ////
 
     save(path) {
         if (!path) {
@@ -116,6 +161,8 @@ class JSONSheet extends Array {
         fArr.path = path;
         return fArr;
     }
+
+    //// END: File commands ////
 
     sortByField(field, dir = 1, options = {sortCopy:false}) {
         let arrToSort = this;
@@ -137,7 +184,7 @@ class JSONSheet extends Array {
             return this.indices[fieldName][value] || [];
         }
 
-        console.warn('searching without index');
+        console.warn('js-sheets: searching without index');
         return this.filter((item) => {
             return item[fieldName] === value;
         });
@@ -154,7 +201,7 @@ class JSONSheet extends Array {
 //     // let intersection = new Set([...a].filter(x => b.has(x)));
 // }
 
-    merge(fObj, field, otherField = field, fieldsToCopy, renames) {
+    merge(fObj, field, otherField = field, fieldsToCopy = false, renames = false) {
         fObj.forEach((extItem) => {
             if (this.indices[field][extItem[otherField]]) {
                 if (!fieldsToCopy) {
@@ -201,6 +248,13 @@ class JSONSheet extends Array {
     };
 });
 
+['splice'].forEach((method) => {
+    JSONSheet.prototype[method] = function () {
+        let rt = Array.prototype[method].call(this, ...arguments);
+        this.removeFromIndices(rt);
+        return rt;
+    };
+});
 
 const queryMethods = {
     "$sum": function (subQuery) {
