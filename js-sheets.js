@@ -252,6 +252,9 @@ class JSONSheet extends Array {
     JSONSheet.prototype[method] = function () {
         let rt = Array.prototype[method].call(this, ...arguments);
         this.removeFromIndices(rt);
+        if (arguments.length > 2) {
+            this.addToIndices(Array.from(arguments).slice(2));
+        }
         return rt;
     };
 });

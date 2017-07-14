@@ -7,8 +7,8 @@ const expect = chai.expect;
 const JSONSheet = require('../js-sheets');
 
 describe('JSON-Sheets', function () {
-    const arr = [{a: 1, b: 4}, {a: 2, b: 3, c: 6}, {a: 3, b: 4}];
-    const extra_item = {a:5,b:5};
+    const arr = [{a: 1, b: 4, d:['x', 'y']}, {a: 2, b: 3, c: 6, d:['z']}, {a: 3, b: 4}];
+    const extra_item = {a:5,b:5, d:['v']};
 
     describe('Array functionality', function () {
         it('should deep clone', function () {
@@ -84,7 +84,9 @@ describe('JSON-Sheets', function () {
             expect(fObj.findByField('b',4)).to.deep.equal([arr[0],arr[2]]);
         });
 
-        xit("findByField should return empty array if not found", function () {
+        it("findByField should return empty array if not found", function () {
+            let fObj = new JSONSheet(arr, {indices: ['a']});
+            expect(fObj.findByField('a',4)).to.deep.equal([]);
         });
 
         it("should be able to add indices to existing sheets", function () {
@@ -117,7 +119,19 @@ describe('JSON-Sheets', function () {
             expect(fObj.indices['b']['4']).to.deep.equal([arr[2],arr[0]]);
         });
 
-        xit("should update (add and remove) indecies on splice", function () {});
+        it("should update (add and remove) indecies on splice", function () {
+            let fObj = new JSONSheet(arr, {indices: ['a']});
+            expect(Object.keys(fObj.indices['a']).length).to.equal(3);
+            fObj.splice(0,1);
+            expect(Object.keys(fObj.indices['a']).length).to.equal(2);
+            fObj.splice(0,2);
+            expect(Object.keys(fObj.indices['a']).length).to.equal(0);
+
+            fObj.splice(0,0,extra_item, arr[2]);
+            expect(Object.keys(fObj.indices['a']).length).to.equal(2);
+            fObj.splice(0,1, arr[1]);
+            expect(Object.keys(fObj.indices['a']).length).to.equal(2);
+        });
 
         it('should have array usability without indices', function () {
             let fObj = new JSONSheet();
@@ -129,7 +143,18 @@ describe('JSON-Sheets', function () {
     });
 
     describe("Array property", function () {
-        xit("should remove from indices upon removal", function () {});
+        it("should remove from indices upon removal", function () {
+            let fObj = new JSONSheet(arr, {indices: ['d']});
+            expect(Object.keys(fObj.indices['d']).length).to.equal(3);
+            fObj.shift();
+            expect(Object.keys(fObj.indices['d']).length).to.equal(1);
+        });
+
+        it("should add to indices upon addition", function () {
+            let fObj = new JSONSheet(arr, {indices: ['d']});
+            fObj.push(extra_item);
+            expect(Object.keys(fObj.indices['d']).length).to.equal(4);
+        });
     });
 
     describe("Sort", function () {
@@ -163,8 +188,12 @@ describe('JSON-Sheets', function () {
     });
 
     describe("File storage", function () {
-        xit('should save to file');
-        xit('should load from file');
-        xit('should save a copy');
+        xit('should save to file', function () {});
+        it('should load from file', function () {
+            let fObj = JSONSheet.fromFile('./test/helpers/sample1.json', {indices: ['a']});
+            expect(Object.keys(fObj.indices['a']).length).to.equal(3);
+            expect(fObj[1]).to.deep.equal(arr[1]);
+        });
+        xit('should save a copy', function () {});
     });
 });
